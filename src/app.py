@@ -1,39 +1,104 @@
+import os
+from dotenv import load_dotenv
+load_dotenv()
+os.environ["HF_TOKEN"] = os.getenv("HF_TOKEN")
+os.environ["STREAMLIT_WATCHER_TYPE"] = "none"
+
+# Suppress logging & warnings
+import warnings
+import logging
+warnings.filterwarnings("ignore")
+logging.getLogger('streamlit').setLevel(logging.CRITICAL)
+
 import streamlit as st
-import httpx
-import json
+from langchain_community.document_loaders import TextLoader, PyPDFLoader
+from indexer import FaissIndexer
+from retrievers import SimpleRetriever
+from query_llm import LLMChat
+from pathlib import Path
 import tempfile
-from extract_pdf import extract_with_pymupdf
 
-st.set_page_config(page_title="Chat To PDFs", layout="centered")
-st.title("🧠 Local LLM Assistant to Chat with PDFs")
+st.set_page_config(page_title="Vector Store Builder", layout="wide")
 
-# Sidebar settings
+SUPPORTED_TYPES = {
+    ".txt": TextLoader,
+    ".pdf": PyPDFLoader,
+}
+
+# 🧠 Utility to load docs from uploaded files
+def load_documents(files):
+    docs = []
+    for file in files:
+        suffix = Path(file.name).suffix
+        if suffix not in SUPPORTED_TYPES:
+            st.warning(f"⚠️ Unsupported file type: {file.name}")
+            continue
+        try:
+            with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+                tmp.write(file.getbuffer())
+                loader = SUPPORTED_TYPES[suffix](tmp.name)
+                docs.extend(loader.load())
+        except Exception as e:
+            st.error(f"❌ Failed to process {file.name}: {e}")
+    return docs
+
+@st.cache_resource
+def get_indexer():
+    return FaissIndexer()
+
+@st.cache_resource
+def build_vector_store(_docs):
+    indexer = get_indexer()
+    return indexer.build_vectorstore(_docs)
+
+# Sidebar – Settings
 with st.sidebar:
     st.header("⚙️ Settings")
     model_name = st.selectbox("Choose Model", ["gemma:2b", "llama3"])
-    # fastapi_url = st.text_input("FastAPI URL", "http://localhost:8000/ask")
     temperature = st.slider("Temperature", 0.0, 1.0, 0.7)
-    max_tokens = st.slider("Max Tokens", 64, 1024, 256)
-    uploaded_file = st.file_uploader("📁 Upload PDF file", type=["pdf"])
+    max_tokens = st.slider("Max Tokens", 64, 2024, 700)
 
-# Main area - extract and display PDF text
-if uploaded_file:
-    st.success(f"Uploaded: {uploaded_file.name}")
+    st.title("📚 Upload Files")
+    uploaded_files = st.file_uploader("Upload .pdf and .txt files", type=["pdf", "txt"], accept_multiple_files=True)
 
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
-        tmp_file.write(uploaded_file.read())
-        tmp_file_path = tmp_file.name
+    if uploaded_files and st.button("🔍 Build Vector Store"):
+        with st.spinner("Embedding and indexing documents..."):
+            docs = load_documents(uploaded_files)
+            if docs:
+                st.session_state.vs = build_vector_store(docs)
+                st.session_state.vs_ready = True
+                st.success(f"✅ Vector store built. Documents loaded: {len(docs)}")
+            else:
+                st.warning("⚠️ No valid documents to process.")
 
-    try:
-        extracted_text = extract_with_pymupdf(tmp_file_path)
-        # st.text_area("📄 Extracted Text", extracted_text, height=300)
-    except Exception as e:
-        st.error(f"Failed to extract text: {e}")
+# Main - Query Interface
+st.title("🔍 Query the Vector Store")
 
-prompt = st.text_area("💬 Enter your prompt", height=68)
-if st.button("Send"):
-    if not prompt:
-        st.warning("Please enter a prompt.")
-    else:
-        with st.spinner("Thinking..."):
-            st.text_area(label="output", value="Here will be LLM output")
+if st.session_state.get("vs_ready"):
+    user_query = st.text_input("Enter your query:", key="query_input")
+
+    if user_query:
+        with st.spinner("🔍 Retrieving relevant chunks..."):
+            retriever = SimpleRetriever(vectorstore=st.session_state.vs, query=user_query, k=3)
+            retrieved_docs = retriever.get_chunks_from_vs()
+
+            if not retrieved_docs:
+                st.warning("⚠️ No relevant chunks found!")
+            else:
+                chunks = "\n\n".join([doc.page_content for doc in retrieved_docs if doc.page_content])
+                # st.subheader("📄 Retrieved Chunks")
+                # for i, doc in enumerate(retrieved_docs):
+                #     st.markdown(f"**Chunk {i+1}:**")
+                #     st.write(doc.page_content)
+
+                llm = LLMChat(model=model_name, temperature=temperature, max_tokens=max_tokens)
+                with st.spinner("🤖 Generating response..."):
+                    response = llm.ask_gemma(user_query, chunks)
+
+                if not response:
+                    st.warning("⚠️ No response from the LLM!")
+                else:
+                    st.subheader("🤖 LLM Response")
+                    st.text_area("LLM Response", value=response, height=400)
+else:
+    st.info("📂 Please upload and build a vector store first.")
