@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # Ollama service to run the model
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama-container
+    ports:
+      - "11434:11434"  # Expose Ollama API port
+    volumes:
+      # - ollama_data:/root/.ollama  # Persist model/cache data
+      - ${HOME}/.ollama:/root/.ollama  # 👈 MOUNT your local models into the container!
+    restart: always
+    # command: ["pull", "gemma:2b"]
+    networks:
+      - app-network
+
+    # Fancy trick: override the entrypoint to pull model and start server
+    entrypoint: >
+      sh -c "
+        echo '🔵 Installing curl...';
+        apt-get update && apt-get install -y curl && apt-get clean;
+        echo '🔵 Pulling internal gemma-2b-it model...';
+        ollama pull gemma-2b-it;
+        echo '🔵 Tagging gemma-2b-it as gemma:2b...';
+        echo '🚀 Starting Ollama server...';
+        exec /bin/ollama serve
+      "
+
+  # Streamlit app
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: streamlit-app
+    environment:
+      - STREAMLIT_WATCHER_TYPE=none
+      - OLLAMA_HOST=http://ollama-container:11434  # <-- Ollama container hostname
+    ports:
+      - "8501:8501"  # Expose Streamlit port
+    volumes:
+      - faiss_data:/app/src/faiss_index  # Volume for your vectorstore
+
+    depends_on:
+      - ollama  # Ensure Ollama starts before the app
+    env_file:
+      - ./src/.env  # Load environment variables from .env file
+    networks:
+      - app-network
+    command: ["streamlit", "run", "app.py"]
+
+volumes:
+  ollama_data:
+  faiss_data:
+
+networks:
+  app-network:
+    driver: bridge

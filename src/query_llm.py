@@ -10,6 +10,7 @@ class LLMChat:
         self.temperature = temperature
         self.max_tokens = max_tokens
 
+
     def ask_gemma(self, query: str, chunks: str) -> str:
         # Define the System and User Prompts using LangChain
         # Prompt templates
@@ -28,7 +29,10 @@ class LLMChat:
         ### Retrieved Information:
         {chunks}
 
-        Only use the retrieved information to answer. If the answer isn't found in the context, say so.
+        ⚡ Important Instructions:
+        - Only use the retrieved information.
+        - If the answer isn't found, reply: "The answer was not found in the provided information."
+        - Return the answer directly. Do NOT add phrases like "Sure, here is the answer:".
         """
 
         # LangChain Prompt Template
@@ -41,6 +45,10 @@ class LLMChat:
                 {"role": "user", "content": user_template.format(query=query, chunks=chunks)}
             ]
 
+            print(type(user_template.format(query=query, chunks=chunks)))
+            print(user_template.format(query=query, chunks=chunks))
+            print(len(user_template.format(query=query, chunks=chunks).split()))
+
             response = ollama.chat(
                 model=self.model,
                 messages=messages,
@@ -49,7 +57,6 @@ class LLMChat:
                     "num_predict": self.max_tokens
                 }
             )
-
             return response["message"]["content"].strip()
 
         except Exception as e:

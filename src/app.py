@@ -1,6 +1,8 @@
 import os
 from dotenv import load_dotenv
 load_dotenv()
+
+os.environ["LLAMA_HOST"] = os.getenv("LLAMA_HOST", "http://localhost:11434")
 os.environ["HF_TOKEN"] = os.getenv("HF_TOKEN")
 os.environ["STREAMLIT_WATCHER_TYPE"] = "none"
 
@@ -79,26 +81,26 @@ if st.session_state.get("vs_ready"):
 
     if user_query:
         with st.spinner("🔍 Retrieving relevant chunks..."):
-            retriever = SimpleRetriever(vectorstore=st.session_state.vs, query=user_query, k=3)
+            retriever = SimpleRetriever(vectorstore=st.session_state.vs, query=user_query, k=6)
             retrieved_docs = retriever.get_chunks_from_vs()
 
-            if not retrieved_docs:
-                st.warning("⚠️ No relevant chunks found!")
+        if not retrieved_docs:
+            st.warning("⚠️ No relevant chunks found!")
+        else:
+            chunks = "\n\n".join([doc.page_content for doc in retrieved_docs if doc.page_content])
+            st.subheader("📄 Retrieved Chunks")
+            for i, doc in enumerate(retrieved_docs):
+                st.markdown(f"**Chunk {i+1}:**")
+                st.write(doc.page_content)
+
+            llm = LLMChat(model=model_name, temperature=temperature, max_tokens=max_tokens)
+            with st.spinner("🤖 Generating response..."):
+                response = llm.ask_gemma(user_query, chunks)
+
+            if not response:
+                st.warning("⚠️ No response from the LLM!")
             else:
-                chunks = "\n\n".join([doc.page_content for doc in retrieved_docs if doc.page_content])
-                # st.subheader("📄 Retrieved Chunks")
-                # for i, doc in enumerate(retrieved_docs):
-                #     st.markdown(f"**Chunk {i+1}:**")
-                #     st.write(doc.page_content)
-
-                llm = LLMChat(model=model_name, temperature=temperature, max_tokens=max_tokens)
-                with st.spinner("🤖 Generating response..."):
-                    response = llm.ask_gemma(user_query, chunks)
-
-                if not response:
-                    st.warning("⚠️ No response from the LLM!")
-                else:
-                    st.subheader("🤖 LLM Response")
-                    st.text_area("LLM Response", value=response, height=400)
+                st.subheader("🤖 LLM Response")
+                st.text_area("LLM Response", value=response, height=400)
 else:
     st.info("📂 Please upload and build a vector store first.")
