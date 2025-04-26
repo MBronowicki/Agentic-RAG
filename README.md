@@ -1,4 +1,7 @@
+<p align="center"> <img src="https://img.shields.io/badge/Docker-🐳-blue" alt="Docker Badge" /> <img src="https://img.shields.io/badge/LangChain-🔗-yellowgreen" alt="LangChain Badge" /> <img src="https://img.shields.io/badge/Ollama-🤖-lightgrey" alt="Ollama Badge" /> <img src="https://img.shields.io/badge/Python-3.10/3.11-blueviolet" alt="Python Badge" /> </p>
+
 # 🧠 **Vector Store Querying with Ollama**
+
 
 This project provides a **Vector Store** built using **LangChain**, integrated with **Ollama** to query models like **Gemma** (2B). With this stack, you can upload documents (PDFs and TXT), build a vector store, and query it using a language model for intelligent responses. 
 
