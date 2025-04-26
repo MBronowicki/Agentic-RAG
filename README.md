@@ -81,8 +81,6 @@ to customize the behavior of the response.
 ### 3. Query the Vector Store:
 After uploading documents, you can enter a query. The app will retrieve the relevant chunks of text from the vector store and use the model (e.g., Gemma) to generate a response based on the query.
 
-## 🔧 Conclusion
-This stack enables you to quickly build and query a Vector Store using **LangChain**, **Ollama's LLMs (Gemma)**, and **Streamlit** for an intuitive interface. By using Docker Compose, I make it easy to deploy and run the app locally.
 
 ## 🌟 Future Improvements (Ideas)
 
@@ -113,6 +111,9 @@ Here are some ideas for enhancing this project further:
   - Optionally split the app into:
     - **FastAPI backend** (async, scalable).
     - **Streamlit or React frontend** (for a modern, user-friendly UI).
+
+## 🔧 Conclusion
+This stack enables you to quickly build and query a Vector Store using **LangChain**, **Ollama's LLMs (Gemma)**, and **Streamlit** for an intuitive interface. By using Docker Compose, I make it easy to deploy and run the app locally.
 
 ---
 
