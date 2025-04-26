@@ -15,11 +15,9 @@ RUN apt-get update && apt-get install -y bash && apt-get clean
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache -r /app/requirements.txt
 
-# Expose Streamlit's default port
-EXPOSE 8501
 
 # Set the working directory to 'src' where app.py is located
 WORKDIR /app/src
 
 # Run the application
-CMD ["streamlit", "run", "app.py", "--server.address=0.0.0.0", "--server.port=8501"]
+CMD ["streamlit", "run", "app.py"]
