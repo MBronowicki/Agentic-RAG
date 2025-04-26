@@ -1,6 +1,7 @@
 # app.py
 
 import os
+import chardet
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -15,7 +16,7 @@ warnings.filterwarnings("ignore")
 logging.getLogger('streamlit').setLevel(logging.CRITICAL)
 
 import streamlit as st
-from langchain_community.document_loaders import TextLoader, PyPDFLoader
+from langchain_community.document_loaders import PyPDFLoader
 from indexer import FaissIndexer
 from retrievers import SimpleRetriever
 from query_llm import LLMChat
@@ -25,7 +26,6 @@ import tempfile
 st.set_page_config(page_title="Vector Store Builder", layout="wide")
 
 SUPPORTED_TYPES = {
-    ".txt": TextLoader,
     ".pdf": PyPDFLoader,
 }
 
@@ -41,7 +41,9 @@ def load_documents(files):
             with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
                 tmp.write(file.getbuffer())
                 loader = SUPPORTED_TYPES[suffix](tmp.name)
+                # print(loader.load())
                 docs.extend(loader.load())
+                # print(docs)
         except Exception as e:
             st.error(f"❌ Failed to process {file.name}: {e}")
     return docs
@@ -59,15 +61,16 @@ def build_vector_store(_docs):
 with st.sidebar:
     st.header("⚙️ Settings")
     model_name = st.selectbox("Choose Model", ["gemma:2b"])
-    temperature = st.slider("Temperature", 0.0, 1.0, 0.7)
-    max_tokens = st.slider("Max Tokens", 64, 2024, 700)
+    temperature = st.slider("Temperature", 0.0, 0.8, 0.7)
+    max_tokens = st.slider("Max Tokens", 500, 1500, 700)
 
     st.title("📚 Upload Files")
-    uploaded_files = st.file_uploader("Upload .pdf and .txt files", type=["pdf", "txt"], accept_multiple_files=True)
+    uploaded_files = st.file_uploader("Upload .pdf files", type=["pdf"], accept_multiple_files=True)
 
     if uploaded_files and st.button("🔍 Build Vector Store"):
         with st.spinner("Embedding and indexing documents..."):
             docs = load_documents(uploaded_files)
+
             if docs:
                 st.session_state.vs = build_vector_store(docs)
                 st.session_state.vs_ready = True

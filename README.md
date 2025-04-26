@@ -70,7 +70,7 @@ After pulling the model, you can start the application using Docker Compose:
 ## 🎯 Using the Application
 
 ### 1. Upload Documents:
-Once the app is running, upload `.pdf` or `.txt` files. These files will be processed to build a vector store.
+Once the app is running, upload `.pdf` files. These files will be processed to build a vector store.
 ### 2. Adjust Model Parameters:
 - You can adjust parameters such as:
 - Model selection (currently Gemma)
