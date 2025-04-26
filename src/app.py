@@ -95,7 +95,7 @@ if st.session_state.get("vs_ready"):
                 st.markdown(f"**Chunk {i+1}:**")
                 st.write(doc.page_content)
 
-            llm = LLMChat(model=model_name, temperature=temperature, max_tokens=max_tokens)
+            llm = LLMChat()
             with st.spinner("🤖 Generating response..."):
                 response = llm.ask_gemma(user_query, chunks)
 

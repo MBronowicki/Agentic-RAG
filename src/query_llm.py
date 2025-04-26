@@ -2,15 +2,13 @@
 
 import ollama
 from langchain.prompts import PromptTemplate
+from base_models import LLMConfig
 
 
 class LLMChat:
     def __init__(
-            self, model: str = "gemma:2b", temperature: float = 0.6, max_tokens: int = 1024
-            ):
-        self.model = model
-        self.temperature = temperature
-        self.max_tokens = max_tokens
+            self, config: LLMConfig = LLMConfig()):
+        self.config = config
 
 
     def ask_gemma(self, query: str, chunks: str) -> str:
@@ -48,11 +46,11 @@ class LLMChat:
             ]
 
             response = ollama.chat(
-                model=self.model,
+                model=self.config.model_name,
                 messages=messages,
                 options={
-                    "temperature": self.temperature,
-                    "num_predict": self.max_tokens
+                    "temperature": self.config.temperature,
+                    "num_predict": self.config.max_tokens
                 }
             )
             return response["message"]["content"].strip()
