@@ -7,6 +7,18 @@ This project provides a **Vector Store** built using **LangChain**, integrated w
 
 ---
 
+## 📑 **Table of Contents**
+- [🚀 Getting Started](#getting-started)
+- [🛠️ Installation Steps](#installation-steps)
+  - [1. Install Ollama CLI](#install-ollama-cli)
+  - [2. Pull the Model](#pull-the-model)
+  - [3. Run Docker Image](#run-docker-image)
+- [🎯 Using the Application](#using-the-application)
+- [🌟 Future Improvements](#future-improvements-ideas)
+- [🔧 Conclusion](#conclusion)
+
+---
+
 ## 🚀 **Getting Started**
 
 Before running the app, ensure you have the following:
@@ -24,7 +36,7 @@ Before running the app, ensure you have the following:
 First, you need to install **Ollama CLI** to run models locally.
 
 #### **Install Ollama CLI**:
-- Go to the [Ollama github website](https://github.com/ollama/ollama) and follow the installation instructions for your OS (Windows, macOS, or Linux).
+- Go to the [Ollama GitHub website](https://github.com/ollama/ollama) and follow the installation instructions for your OS (Windows, macOS, or Linux).
   
 For example, on macOS:
 ```bash
@@ -73,26 +85,35 @@ After uploading documents, you can enter a query. The app will retrieve the rele
 This stack enables you to quickly build and query a Vector Store using **LangChain**, **Ollama's LLMs (Gemma)**, and **Streamlit** for an intuitive interface. By using Docker Compose, I make it easy to deploy and run the app locally.
 
 ## 🌟 Future Improvements (Ideas)
+
 Here are some ideas for enhancing this project further:
 
-- Improve Text Preprocessing:
+- **Improve Text Preprocessing**:
+  - Clean and split extracted text more intelligently (e.g., removing special characters, better sentence splitting).
 
-    - Clean and split extracted text more intelligently (e.g., removing special characters, better sentence splitting).
+- **Use Larger Models**:
+  - Upgrade to larger models like Llama 3 (7B, 13B) for better context understanding and richer answers.
 
-- Use Larger Models:
+- **Increase Context Window**:
+  - Switch to models with a larger context window to improve long-document comprehension.
 
-    - Upgrade to larger models like Llama 3 (7B, 13B) for better context understanding and richer answers.
+- **Build a More Advanced RAG System**:
+  - Implement techniques like:
+    - **Self-Reflective RAG** (model reflects on retrieval).
+    - **Re-ranking retrieved chunks** (to prioritize most relevant).
+    - **Multi-hop Retrieval** (retrieve-answer-retrieve for complex queries).
 
-- Increase Context Window:
+- **Experiment with Chunk Sizes and Splitting Techniques**:
+  - Tune the chunk sizes and try advanced splitting (e.g., semantic splitting) to improve retrieval precision.
 
-    - Switch to models with a larger context window to improve long-document comprehension.
+- **Introduce Async Processing**:
+  - Refactor critical parts (like LLM querying and file loading) to async/await to handle multiple user queries more efficiently, especially for scaling.
 
-- Build a More Advanced RAG System:
+- **Backend API Separation**:
+  - Optionally split the app into:
+    - **FastAPI backend** (async, scalable).
+    - **Streamlit or React frontend** (for a modern, user-friendly UI).
 
-    - Implement Self-Reflective RAG, Re-ranking, or Multi-hop Retrieval for even better answers.
+---
 
-- Experiment with Chunk Sizes and Splitting Techniques:
-
-    - Tune the chunk sizes and try advanced splitting (e.g., semantic splitting) to improve retrieval precision.
-
-Enjoy querying your vector store! 😎
+🚀 Enjoy building and querying your vector store! Happy experimenting! 😎
