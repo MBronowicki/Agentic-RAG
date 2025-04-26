@@ -1,3 +1,5 @@
+# app.py
+
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -56,7 +58,7 @@ def build_vector_store(_docs):
 # Sidebar – Settings
 with st.sidebar:
     st.header("⚙️ Settings")
-    model_name = st.selectbox("Choose Model", ["gemma:2b", "llama3"])
+    model_name = st.selectbox("Choose Model", ["gemma:2b"])
     temperature = st.slider("Temperature", 0.0, 1.0, 0.7)
     max_tokens = st.slider("Max Tokens", 64, 2024, 700)
 
