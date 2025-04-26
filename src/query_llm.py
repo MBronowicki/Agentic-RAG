@@ -45,10 +45,6 @@ class LLMChat:
                 {"role": "user", "content": user_template.format(query=query, chunks=chunks)}
             ]
 
-            print(type(user_template.format(query=query, chunks=chunks)))
-            print(user_template.format(query=query, chunks=chunks))
-            print(len(user_template.format(query=query, chunks=chunks).split()))
-
             response = ollama.chat(
                 model=self.model,
                 messages=messages,
