@@ -87,7 +87,7 @@ After uploading documents, you can enter a query. The app will retrieve the rele
 
 Here are some ideas for enhancing this project further:
 
-- 🌱 **Improve Text Preprocessing** - Clean and split extracted text more intelligently (e.g., removing special characters, better sentence splitting).
+- 🧹 **Improve Text Preprocessing** - Clean and split extracted text more intelligently (e.g., removing special characters, better sentence splitting).
 
 - 🧠 **Upgrade to Larger Models** - Switch to larger models like **Llama 3** (7B, 13B) for better context understanding, richer answers, and to improve long-document comprehension with a larger context window.
 
