@@ -99,6 +99,7 @@ Here are some ideas for enhancing this project further:
   - 🤖 **Self-Reflective RAG** (model reflects on retrieval).
   - 🔍 **Re-ranking retrieved chunks** (to prioritize the most relevant).
   - 🔄 **Multi-hop Retrieval** (retrieve-answer-retrieve for complex queries).
+  - 🧠 **Agentic RAG** — Integrate agent-like behavior (e.g., planning, tool usage, reasoning chains) to enable handling of complex and dynamic tasks autonomously.
 
 - 🧩 **Experiment with Chunk Sizes and Splitting Techniques** - Tune the chunk sizes and try advanced splitting (e.g., semantic splitting) to improve retrieval precision.
 
