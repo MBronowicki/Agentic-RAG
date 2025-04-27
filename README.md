@@ -67,18 +67,19 @@ After pulling the model, you can start the application using Docker Compose:
     docker compose up -d
 ```
 
-## 🎯 Using the Application
+## 🖥️ Using the Application
 
-### 1. Upload Documents:
+### 1. 📤 Upload Documents:
 Once the app is running, upload `.pdf` files. These files will be processed to build a vector store.
-### 2. Adjust Model Parameters:
-- You can adjust parameters such as:
-- Model selection (currently Gemma)
-- Temperature
-- Maximum tokens
+### 2. ⚙️ Adjust Model Parameters:
+You can adjust parameters such as:
+- 🤖 Model selection (currently Gemma)
+- 🌡️ Temperature
+- 🔢 Maximum tokens
 
-to customize the behavior of the response.
-### 3. Query the Vector Store:
+While you can modify these settings to fine-tune the behavior of the responses, keep in mind that since this system uses a smaller LLM, the impact of these adjustments may be less noticeable compared to larger models. Nevertheless, experimenting with them can still help improve the generated output within the system’s constraints.
+
+### 3. 🔍 Query the Vector Store:
 After uploading documents, you can enter a query. The app will retrieve the relevant chunks of text from the vector store and use the model (e.g., Gemma) to generate a response based on the query.
 
 
