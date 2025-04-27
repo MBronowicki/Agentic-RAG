@@ -89,6 +89,9 @@ Here are some ideas for enhancing this project further:
 
 - 🧹 **Improve Text Preprocessing** - Clean and split extracted text more intelligently (e.g., removing special characters, better sentence splitting).
 
+- 🌍 **Scalable Storage** - Integrate hybrid search (e.g., ElasticSearch).
+- 🔍 **Enhanced Embeddings** - Try different embedding models for better context.
+
 - 🧠 **Upgrade to Larger Models** - Switch to larger models like **Llama 3** (7B, 13B) for better context understanding, richer answers, and to improve long-document comprehension with a larger context window.
 
 - 🔧 **Build a More Advanced RAG System**  
