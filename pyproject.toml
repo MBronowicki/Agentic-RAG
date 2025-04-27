@@ -1,0 +1,76 @@
+[project]
+name = "simple-RAG"
+version = "0.0.0"
+author = [{name = "Mariusz Bronowicki", email = "m.bronowicki@hotmail.com"}]
+description = "A simple RAG (Retrieval-Augmented Generation) system that processes PDFs locally using Ollama's Gemma model and FAISS. Please note that the use of Gemma is subject to Ollama's licensing terms."
+requires-python = ">=3.12"
+license = ""
+readme = "README.md"
+dependencies = [
+    "python-dotenv==1.1.0",
+    "sentence-transformers==4.1.0",
+    "langchain_huggingface==0.1.2",
+    "streamlit==1.44.1",
+    "langchain_community==0.3.21",
+    "ollama==0.4.8",
+    "pypdf==5.4.0",
+    "faiss-cpu==1.10.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit==3.5.0",
+    "ruff==0.1.5",
+    "mypy==1.7.0"
+]
+
+[tool.setuptools.dynamic]
+readme = {file = {"README.md"}}
+
+[tool.ruff]
+target-version = "py312"
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+    "UP", # pyupgrade
+]
+
+ignore = [
+    "C901", # too complex
+]
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+    "./archive"
+]
+
+[project.urls]
+Repository = "https://github.com/MBronowicki/Simple-RAG"
+
+[tool.mypy]
+no_implicit_optional = false
+ignore_missing_imports = true
+exclude = "./archive"
